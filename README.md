@@ -23,3 +23,8 @@ A powerful text-to-image generation application built with MERN stack and integr
 3. Set environment variables
 4. Run development server: `npm run dev`
 5. Run backend server: `npm run start`
+
+## Credits
+1. Razorpay
+2. Clipdrop APIs
+3. Framer-Motion
