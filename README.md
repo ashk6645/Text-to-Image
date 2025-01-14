@@ -8,6 +8,7 @@ A powerful text-to-image generation application built with MERN stack and integr
 - Credit System
 - Secure Payment Integration
 - Responsive Design
+- Download Result
 
 ## Tech Stack
 - MongoDB
