@@ -7,7 +7,6 @@ const Navbar = () => {
     const {user, setShowLogin, logout, credit} = useContext(AppContext);
 
     const Navigate = useNavigate();
-
     return (
         <div className='flex items-center justify-between py-4'>
             <Link to='/'>
@@ -51,5 +50,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-
-

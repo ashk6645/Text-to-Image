@@ -33,6 +33,24 @@ const Result = () => {
       onSubmit={onSubmitHandler}
       className="flex flex-col min-h-[90vh] justify-center items-center bg-gradient-to-r from-blue-100 to-teal-100 p-6"
     >
+
+
+
+      {/* Header Section */}
+      <header className="text-center mb-10">
+        <motion.h1
+          className="text-4xl sm:text-4xl font-bold text-gray-700"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 1 }}
+        >
+          Your AI-Generated Masterpiece
+        </motion.h1>
+      </header>
+
+
+
+
       <div className="relative w-full max-w-md">
         {/* Display Image */}
         <div className="relative">

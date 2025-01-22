@@ -7,7 +7,7 @@ const Footer = () => {
 
         <img src={assets.logo} alt="" width={150}/>
 
-        <p className='flex-1 border-l border-gray-400 pl-4 text-sm text-gray-500 max-sm:hidden'>Copyright @Ashutosh | All rights reserved.</p>
+        <p className='flex-1 border-l border-gray-400 pl-4 text-sm text-gray-500 max-sm:hidden'>© 2025 Ashutosh. All rights reserved since 2025.</p>
         <div className='flex gap-2.5'>
             <img src={assets.facebook_icon} alt="" width={30}/>
             <img src={assets.twitter_icon} alt="" width={30}/>
