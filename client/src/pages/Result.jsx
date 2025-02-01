@@ -4,24 +4,34 @@ import { motion } from 'framer-motion';
 import { AppContext } from '../context/AppContext';
 
 const Result = () => {
-  const [image, setImage] = useState(assets.sample_img_1);
+  const [image, setImage] = useState(null);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
+  const [error, setError] = useState('');
   const { generateImage } = useContext(AppContext);
-
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    if (input) {
-      const image = await generateImage(input);
-      if (image) {
-        setIsImageLoaded(true);
-        setImage(image);
-      }
+    if (!input.trim()) {
+      setError('Please enter a description to generate an image');
+      return;
     }
-    setLoading(false);
+    
+    setLoading(true);
+    setError('');
+    try {
+      const generatedImage = await generateImage(input);
+      if (generatedImage) {
+        setImage(generatedImage);
+        setIsImageLoaded(true);
+      }
+    } catch (err) {
+      setError('Failed to generate image. Please try again.');
+      console.error('Generation error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,85 +41,116 @@ const Result = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       onSubmit={onSubmitHandler}
-      className="flex flex-col min-h-[90vh] justify-center items-center bg-gradient-to-r from-blue-100 to-teal-100 p-6"
+      className="flex flex-col min-h-[90vh] justify-center items-center bg-gradient-to-br from-sky-50 to-cyan-50 p-6"
     >
-
-
-
       {/* Header Section */}
-      <header className="text-center mb-10">
+      <header className="text-center mb-10 space-y-4">
         <motion.h1
-          className="text-4xl sm:text-4xl font-bold text-gray-700"
+          className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 1 }}
         >
-          Your AI-Generated Masterpiece
+          Transform Ideas into Art
         </motion.h1>
+        <p className="text-gray-600 text-lg max-w-2xl">
+          Describe your vision and watch as AI brings it to life. Start with something like "A sunset over snow-capped mountains" or "cyberpunk cityscape".
+        </p>
       </header>
 
+      {/* Main Content Area */}
+      <div className="w-full max-w-2xl space-y-8">
+        {/* Image Display Area */}
+        <div className="relative aspect-square w-full bg-gray-50 rounded-2xl shadow-lg overflow-hidden">
+          {image ? (
+            <img
+              src={image}
+              alt="Generated artwork"
+              className="w-full h-full object-cover transition-opacity duration-300"
+              onLoad={() => setIsImageLoaded(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-400">
+              <span className="text-lg">Your generated artwork will appear here</span>
+            </div>
+          )}
 
-
-
-      <div className="relative w-full max-w-md">
-        {/* Display Image */}
-        <div className="relative">
-          <img
-            src={image}
-            alt="Generated"
-            className="max-w-full rounded-lg shadow-xl transition-all duration-500"
-          />
-          {/* Loading Progress Bar */}
-          <span
-            className={`absolute bottom-0 left-0 h-1 bg-blue-500 ${loading ? 'w-full transition-all duration-[10s]' : 'w-0'}`}
-          />
+          {/* Loading Overlay */}
+          {loading && (
+            <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center space-y-4">
+              <div className="spinner-dot-pulse">
+                <div className="dot-pulse"></div>
+              </div>
+              <p className="text-white font-medium text-lg">Crafting your masterpiece...</p>
+            </div>
+          )}
         </div>
 
-        {/* Loading State Text */}
-        {loading && (
-          <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl text-white font-semibold">
-            Generating Image...
-          </p>
+        {/* Error Message */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-red-500 text-center px-4 py-2 bg-red-50 rounded-lg"
+          >
+            {error}
+          </motion.div>
+        )}
+
+        {/* Input Section */}
+        {!isImageLoaded && !loading && (
+          <div className="flex flex-col space-y-4">
+            <div className="relative flex items-center bg-white shadow-md rounded-xl p-1">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  setError('');
+                }}
+                placeholder="Describe your vision..."
+                className="flex-1 px-6 py-4 text-lg bg-transparent outline-none placeholder:text-gray-400"
+                aria-label="Image description input"
+              />
+              <button
+                type="submit"
+                className="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-8 py-4 rounded-xl font-medium hover:scale-[1.02] transition-transform duration-200 shadow-lg"
+              >
+                Create Art
+              </button>
+            </div>
+            <p className="text-gray-500 text-sm text-center">
+              Tip: Be descriptive! Include colors, styles, and context for best results.
+            </p>
+          </div>
+        )}
+
+        {/* Post-Generation Actions */}
+        {isImageLoaded && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <button
+              onClick={() => {
+                setIsImageLoaded(false);
+                setInput('');
+              }}
+              className="px-8 py-3 rounded-xl bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors duration-200 shadow-md"
+            >
+              Start Over
+            </button>
+            <a
+              href={image}
+              download="AI-Artwork.png"
+              className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white hover:shadow-lg transition-shadow duration-200 text-center shadow-md"
+            >
+              Download Artwork
+            </a>
+          </motion.div>
         )}
       </div>
-
-      {/* Input Field to Describe Image */}
-      {!isImageLoaded && !loading && (
-        <div className="flex w-full max-w-xl bg-white text-gray-700 text-sm p-3 mt-8 rounded-xl shadow-md">
-          <input
-            onChange={(e) => setInput(e.target.value)}
-            value={input}
-            type="text"
-            placeholder="Describe what you want to generate"
-            className="flex-1 bg-transparent outline-none text-lg placeholder-gray-500 px-4 py-2 rounded-l-full"
-          />
-          <button
-            type="submit"
-            className="bg-gradient-to-r from-blue-500 to-teal-500 text-white px-8 py-3 rounded-full hover:scale-105 transition-all duration-300"
-          >
-            Generate
-          </button>
-        </div>
-      )}
-
-      {/* Image Action Buttons after Image is Loaded */}
-      {isImageLoaded && (
-        <div className="flex gap-4 mt-8">
-          <button
-            onClick={() => setIsImageLoaded(false)}
-            className="bg-transparent border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-full cursor-pointer hover:bg-blue-600 hover:text-white transition-all duration-300"
-          >
-            Generate Another
-          </button>
-          <a
-            href={image}
-            download
-            className="bg-gradient-to-r from-blue-500 to-teal-500 text-white px-8 py-3 rounded-full hover:scale-105 transition-all duration-300"
-          >
-            Download
-          </a>
-        </div>
-      )}
     </motion.form>
   );
 };

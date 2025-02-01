@@ -42,7 +42,7 @@ const Header = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 2 }}
       >
-        Transform your words into stunning <span className="text-blue-600">images.</span>
+        Transform Text into Visual <span className="text-blue-600">Masterpiece.</span>
       </motion.h1>
 
       {/* Description */}
@@ -66,38 +66,42 @@ const Header = () => {
         animate={{ opacity: 1 }}
         transition={{ default: { duration: 0 }, opacity: { delay: 0, duration: 0.2 } }}
       >
-        Generate Images
+        Start Creating Now!
         <img src={assets.star_group} alt="star group" className="h-6" />
       </motion.button>
 
       {/* Sample Images */}
       <motion.div
-        className="flex flex-wrap justify-center mt-16 gap-6 sm:gap-8"
+        className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 mt-20 px-4 w-full max-w-6xl"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
+        transition={{ delay: 1, duration: 0.8 }}
       >
-        {Array(8)
-  .fill('')
-  .map((item, index) => (
-    <motion.img
-      key={index}
-      src={assets[`sample_img_${(index % 8) + 1}`]} // This will alternate between sample_img_1, sample_img_2, and sample_img_3
-      alt={`sample image ${index}`}
-      width={70}
-      className="rounded-xl hover:scale-105 transition-all duration-300 cursor-pointer shadow-md"
-    />
-  ))}
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+          <motion.div
+            key={item}
+            className="relative aspect-square overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+            whileHover={{ scale: 1.03 }}
+          >
+            <img
+              src={assets[`sample_img_${item}`]}
+              alt={`AI generated example: ${assets[`sample_img_${item}_desc`] || 'Creative artwork'}`}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          </motion.div>
+        ))}
       </motion.div>
 
-      {/* Footer */}
+      {/* Footer Attribution */}
       <motion.p
-        className="mt-6 text-neutral-600 text-sm"
+        className="mt-12 text-gray-500 text-sm font-medium"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
+        transition={{ delay: 1.2 }}
       >
-        Images powered by Imagify
+        Powered by <span className="text-blue-600">Imagify AI</span> • Trusted by 250k+ creators worldwide
       </motion.p>
     </motion.div>
   );
