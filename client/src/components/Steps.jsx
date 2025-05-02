@@ -1,89 +1,152 @@
-// import React from 'react'
-// import { stepsData } from '../assets/assets'
-// import { motion } from 'framer-motion'
-
-// const Steps = () => {
-//   return (
-//     <motion.div
-//       initial={{ opacity: 0.2, y: 100 }}
-//       transition={{ duration: 1 }}
-//       whileInView={{ opacity: 1, y: 0 }}
-//       viewport={{ once: true }}
-//       className='flex flex-col items-center justify-center my-32' >
-//       <h1 className='text 3xl sm:text-4xl font-semobold mb-2' >How it works</h1>
-//       <p className='text-lg text-gray-600 mb-8' >Transforms word into stunning Images</p>
-
-//       <div className='space y-4 w-full max-w-3xl text-sm'>
-//         {stepsData.map((item, index) => (
-//           <div key={index} className='flex items-center gap-4 p-5 px-8 bg-white/20 shadow-md border cursor-pointer hover:scale-[1.02] transition-all duration-300 rounded-lg' >
-//             <img src={item.icon} alt="" />
-//             <div>
-//               <h2 className='text-xl font-medium'>{item.title}</h2>
-//               <p className='text-gray-500'>{item.description}</p>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </motion.div>
-//   )
-// }
-
-// export default Steps
-
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import { stepsData } from '../assets/assets';
 import { motion } from 'framer-motion';
 
 const Steps = () => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0.2, y: 100 }}
-      transition={{ duration: 1 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="flex flex-col items-center justify-center py-20 sm:py-32"
-    >
-      {/* Title */}
-      <motion.h1
-        className="text-3xl sm:text-4xl font-semibold mb-4 text-gray-900"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 1 }}
+    <section className="py-20 bg-gradient-to-b from-white to-blue-50">
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={container}
+        className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        How it works
-      </motion.h1>
-
-      {/* Description */}
-      <motion.p
-        className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 1 }}
-      >
-        Transform words into stunning images with ease. Follow these simple steps to unleash your creativity!
-      </motion.p>
-
-      {/* Steps Container */}
-      <div className="w-full max-w-3xl space-y-6">
-        {stepsData.map((item, index) => (
-          <motion.div
-            key={index}
-            className="flex items-start gap-6 p-6 bg-white shadow-lg rounded-xl cursor-pointer transform hover:scale-105 transition-all duration-300"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 + index * 0.2, duration: 0.8 }}
+        {/* Header */}
+        <div className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4"
           >
-            <img src={item.icon} alt={item.title} className="w-12 h-12 rounded-full object-contain" />
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">{item.title}</h2>
-              <p className="text-gray-600">{item.description}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
+            How It Works
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-gray-600 max-w-2xl mx-auto"
+          >
+            Transform your ideas into stunning visuals in three simple steps
+          </motion.p>
+        </div>
+
+        {/* Steps */}
+        <div className="relative">
+          {/* Connection Line */}
+          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-blue-400 to-teal-400 transform -translate-y-1/2 hidden md:block" />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+            {stepsData.map((step, index) => (
+              <motion.div
+                key={index}
+                variants={item}
+                onHoverStart={() => setHoveredIndex(index)}
+                onHoverEnd={() => setHoveredIndex(null)}
+                className="relative"
+              >
+                {/* Step Number */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    scale: hoveredIndex === index ? 1.1 : 1,
+                    backgroundColor: hoveredIndex === index ? '#3B82F6' : '#ffffff'
+                  }}
+                  className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center mx-auto mb-6 relative z-10"
+                >
+                  <span 
+                    className={`text-xl font-bold ${
+                      hoveredIndex === index ? 'text-white' : 'text-blue-500'
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                </motion.div>
+
+                {/* Icon */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    y: hoveredIndex === index ? -5 : 0,
+                    scale: hoveredIndex === index ? 1.1 : 1
+                  }}
+                  className="flex justify-center mb-6"
+                >
+                  <img 
+                    src={step.icon} 
+                    alt={step.title} 
+                    className="w-16 h-16 object-contain"
+                  />
+                </motion.div>
+
+                {/* Content */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    scale: hoveredIndex === index ? 1.02 : 1
+                  }}
+                  className="text-center px-4"
+                >
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600">
+                    {step.description}
+                  </p>
+                </motion.div>
+
+                {/* Background Card */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    scale: hoveredIndex === index ? 1.05 : 1,
+                    boxShadow: hoveredIndex === index 
+                      ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                      : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                  }}
+                  className="absolute inset-0 bg-white rounded-2xl -z-10"
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6 }}
+          className="text-center mt-16"
+        >
+          <button 
+            onClick={() => window.location.href = '/result'}
+            className="bg-gradient-to-r from-blue-500 to-teal-500 text-white px-8 py-3 rounded-full text-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+          >
+            Start Creating Now
+          </button>
+        </motion.div>
+      </motion.div>
+    </section>
   );
 };
 
